@@ -8,6 +8,7 @@ const activitySchema = new Schema({
     description: String,
     dueDate: { type: Date , default: Date.now },
     status: { type: String, default: status.open },
+    ownerId: {type: Schema.Types.ObjectId, default: null},
   },
   {
     timestamps: {
@@ -21,6 +22,7 @@ activitySchema.index({ name: 1 });
 const activityModel = mongoose.model('activities', activitySchema);
 
 const addActivity = async (data) => {
+  data.ownerId = data.userId;
   const result = await new activityModel(data).save()
   return result.toJSON({versionKey: false})
 }

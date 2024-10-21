@@ -20,10 +20,16 @@ import updateActivityController from './activity/updateActivityController.js'
 import createUserController from './user/createUserController.js'
 import checkUserMailController from './user/checkUserMailController.js'
 import loginController from './user/loginController.js';
+
+/**
+ * ACTIVITY CONTROLLERS
+ */
+import checkAuthorizationMiddleware from '../middleware/checkAuthorizationMiddleware.js'
+
                                                                      
 const setup = (app) => {
     app.get('/activity/:id', retrieveActivityController);
-    app.post('/activity', createActivityValidator, addActivityController);
+    app.post('/activity',checkAuthorizationMiddleware, createActivityValidator, addActivityController);
     app.patch('/activity/:id', updateActivityValidator, updateActivityController);
     app.delete('/activity/:id', removeActivityController);
     //definire app.use dopo la route app.post, app.patch
@@ -36,6 +42,8 @@ const setup = (app) => {
                 type: err.type,
                 message: err.error.toString()
             })
+
+            
 
         } else {
             next(err);

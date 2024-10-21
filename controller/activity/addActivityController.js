@@ -1,9 +1,11 @@
 import {addActivity} from '../../service/activityService.js'
+import activityNormalizer from '../../normalizer/activityNormalizer.js';
 
 export default async (req,res) => {
     try {
-        const result = await addActivity(req.body) // promise
-        res.status(201).json(result);
+        const data = {...req.body, userId: req.userId};
+        const result = await addActivity(data) // promise
+        res.status(201).json(activityNormalizer(result));
     } catch (error) {
         console.log(error)
         res.status(500).json({message: error.message})

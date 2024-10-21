@@ -1,6 +1,7 @@
 import userRepo from '../repository/userRepository.js'
 import cryptoUtils from '../utils/cryptoUtils.js'
 import mailer from 'nodemailer';
+import UnauthorizedException from '../exception/UnauthorizedException.js'
 
 const register = async (content) => {
   const  {password, salt} = cryptoUtils.hashPassword(content.password)
@@ -17,7 +18,7 @@ const buildRegistrationLink = (id, token) => {
   return `http://localhost:8000/user/${id}/confirm/${encodeURIComponent(token)}`
 }
 const sendRegistrationMail = async (email, link) => {
-	const senderAddress = 'augusto.ciuccatosti@gmail.com';
+	const senderAddress = 'valentina.casula70@gmail.com';
 	const subject = 'todolist registration';
 	const body = `Open this link to complete registration ${link}`;
 	const transport = {
@@ -26,7 +27,7 @@ const sendRegistrationMail = async (email, link) => {
 	  secure: true, // true for 465, false for other ports
 	  auth: {
 		user: senderAddress,
-		pass: '*****', //creata ad hoc la password per le APP di Google
+		pass: 'gfnigfsqwzwwdnoz',
 	  },
 	};
 	const mailData = {
@@ -44,8 +45,9 @@ const sendRegistrationMail = async (email, link) => {
   }
 
   const login = async (email, password) => {
+	console.log('user from email', email);
 	const user =  await userRepo.getByEmail(email);
-  
+  console.log('user from db', user);
 	if (!cryptoUtils.compare(password, user.salt, user.password)) {
 	  throw new UnauthorizedException('Unauthorized', 100201)
 	}
